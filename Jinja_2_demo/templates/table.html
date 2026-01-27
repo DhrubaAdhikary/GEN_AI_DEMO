@@ -1,0 +1,61 @@
+<div style="margin-bottom:12px;">
+  <strong>Column Legend</strong>
+  <details>
+    <summary style="cursor:pointer;">Show / Hide</summary>
+    <ul style="margin-top:6px;">
+      {% for col in table_columns %}
+        <li>
+          <strong>{{ col }}</strong>:
+          {{ columns_metadata[col] if columns_metadata and col in columns_metadata else "No description available." }}
+        </li>
+      {% endfor %}
+    </ul>
+  </details>
+</div>
+
+<table border="1" cellspacing="0" cellpadding="5"
+       style="border-collapse:collapse;width:100%;font-size:13px;">
+  <thead>
+    <tr>
+      {% for col in table_columns %}
+        {% if col == "id" or col.endswith("_id") %}
+          <th style="background:#f2f2f2;text-align:left;">
+            <input type= "checkbox" onclick="toggleColumn('{{ col }}', this.checked)" />
+            {{ col }}
+          </th>
+        {% else %}
+          <th style="background:#f2f2f2;text-align:left;">
+            {{ col }}
+          </th>
+        {% endif %}
+      {% endfor %}
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for row in table_rows %}
+      <tr>
+        {% for col in table_columns %}
+          {% set value = row.get(col, "") %}
+          {% if col == "id" or col.endswith("_id") or col.startswith("asset_name") %}
+            <td>
+              <input type="checkbox" onclick="toggleColumn('{{ col }}', this.checked)"
+                     class="col-{{ col }}"
+                     value="{{ value }}" />
+              {{ value }}
+            </td>
+          {% else %}
+            <td>{{ value }}</td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+function toggleColumn(column, checked) {
+  const boxes = document.querySelectorAll('.col-' + column);
+  boxes.forEach(cb => cb.checked = checked);
+}
+</script>
